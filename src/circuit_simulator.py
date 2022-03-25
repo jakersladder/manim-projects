@@ -1,6 +1,7 @@
 from manim import *
 import math
 import numpy as np
+from utils import * 
 
 # Electric Circuit Simulator
 class RLC(Scene):
@@ -24,11 +25,6 @@ class RLC(Scene):
 
         Vc = self.Q / self.C.get_value()
         return Vc, self.I
-    
-    def get_resonant_frequency(self):
-        frequency = 1 / ((self.L.get_value() * self.C.get_value()) ** 0.5)
-        resonant_frequency = frequency / (2 * PI)
-        return resonant_frequency
 
     # Generates the plot Volatage by Time
     def generate_voltage_plot(self, axes):
@@ -110,7 +106,7 @@ class RLC(Scene):
         # Create Frequency Text
         frequency_text = Text("Frequency = ", font_size=36).set_color(ORANGE)
         frequency_number = DecimalNumber(
-                    self.get_resonant_frequency(),
+                    get_resonant_frequency(self.L, self.C),
                     num_decimal_places = 2
                 )
         frequency_units = Text("Hz", font_size=28, slant = ITALIC)
@@ -127,7 +123,7 @@ class RLC(Scene):
         r_number.add_updater(lambda m: m.set_value(self.R.get_value()))
         l_number.add_updater(lambda m: m.set_value(self.L.get_value()))
         c_number.add_updater(lambda m: m.set_value(self.C.get_value()))
-        frequency_number.add_updater(lambda m: m.set_value(self.get_resonant_frequency()))
+        frequency_number.add_updater(lambda m: m.set_value(get_resonant_frequency(self.L, self.C)))
 
         # add objects and animations
         self.add(r_label, l_label, c_label, frequency_label, va_label)
