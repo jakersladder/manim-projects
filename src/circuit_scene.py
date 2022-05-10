@@ -51,6 +51,66 @@ class CircuitScene(Scene):
         self.I = 0
         return axes.plot(lambda t: self.get_voltage_and_current()[3], [0, self.delta.get_value(), self.dt]).set_color(GREEN)
 
+    # /// ORIENTERS ///
+
+    # for inductor
+    def set_orientation_l_plus(self, mobj, next):
+        if self.get_voltage_and_current()[0] > 0:
+            mobj.next_to(next, DL, buff=0)
+        else:
+            mobj.next_to(next, UL, buff=0)
+
+    def set_orientation_l_minus(self, mobj, next):
+        if self.get_voltage_and_current()[0] > 0:
+            mobj.next_to(next, UL, buff=0)
+        else:
+            mobj.next_to(next, DL, buff=0)
+
+    # for resistor
+    def set_orientation_r_plus(self, mobj, next):
+        if self.get_voltage_and_current()[1] > 0:
+            mobj.next_to(next, UR, buff=0)
+        else:
+            mobj.next_to(next, UL, buff=0)
+
+    def set_orientation_r_minus(self, mobj, next):
+        if self.get_voltage_and_current()[1] > 0:
+            mobj.next_to(next, UL, buff=0)
+        else:
+            mobj.next_to(next, UR, buff=0)
+
+    # for capacitor
+    def set_orientation_c_plus(self, mobj, next):
+        if self.get_voltage_and_current()[0] > 0:
+            mobj.next_to(next, UR)
+        else:
+            mobj.next_to(next, DR)
+
+    def set_orientation_c_minus(self, mobj, next):
+        if self.get_voltage_and_current()[0] > 0:
+            mobj.next_to(next, DR)
+        else:
+            mobj.next_to(next, UR)
+
+    # for arrows
+    def set_orientation_l_arrow(self, mobj, next):
+        if self.get_voltage_and_current()[1] > 0:
+            mobj.put_start_and_end_on(start=DOWN, end=UP).next_to(next, RIGHT, buff=0.1).scale(0.4)
+        else:
+            mobj.put_start_and_end_on(start=UP, end=DOWN).next_to(next, RIGHT, buff=0.1).scale(0.4)
+
+    def set_orientation_r_arrow(self, mobj, next):
+        if self.get_voltage_and_current()[1] > 0:
+            mobj.put_start_and_end_on(start=LEFT, end=RIGHT).next_to(next, DOWN).scale(0.4)
+        else:
+            mobj.put_start_and_end_on(start=RIGHT, end=LEFT).next_to(next, DOWN).scale(0.4)
+
+    def set_orientation_c_arrow(self, mobj, next):
+        if self.get_voltage_and_current()[1] > 0:
+            mobj.put_start_and_end_on(start=UP, end=DOWN).next_to(next, LEFT).scale(0.4)
+        else:
+            mobj.put_start_and_end_on(start=DOWN, end=UP).next_to(next, LEFT).scale(0.4)
+
     # Constructs the Scene
     def construct(self):
 
@@ -201,26 +261,26 @@ class CircuitScene(Scene):
         minus_c = Text("-", font_size=40).set_color(YELLOW).next_to(dielectric_field, DR)
 
         arrow_l.add_updater(lambda m: m.set_opacity(abs(self.get_voltage_and_current()[1])*2))
-        arrow_l.add_updater(lambda m: set_orienation_l_arrow(self, m, magnetic_field))
+        arrow_l.add_updater(lambda m: self.set_orientation_l_arrow(m, magnetic_field))
         arrow_r.add_updater(lambda m: m.set_opacity(abs(self.get_voltage_and_current()[1])*2))
-        arrow_r.add_updater(lambda m: set_orienation_r_arrow(self, m, resistive_loss))
+        arrow_r.add_updater(lambda m: self.set_orientation_r_arrow(m, resistive_loss))
         arrow_c.add_updater(lambda m: m.set_opacity(abs(self.get_voltage_and_current()[1])*2))
-        arrow_c.add_updater(lambda m: set_orienation_c_arrow(self, m, dielectric_field))
+        arrow_c.add_updater(lambda m: self.set_orientation_c_arrow(m, dielectric_field))
 
         plus_r.add_updater(lambda m: m.set_opacity(abs(self.get_voltage_and_current()[1])*2))
-        plus_r.add_updater(lambda m: set_oriention_r_plus(self, m, resistive_loss))
+        plus_r.add_updater(lambda m: self.set_orientation_r_plus(m, resistive_loss))
         minus_r.add_updater(lambda m: m.set_opacity(abs(self.get_voltage_and_current()[1])*2))
-        minus_r.add_updater(lambda m: set_oriention_r_minus(self, m, resistive_loss))
+        minus_r.add_updater(lambda m: self.set_orientation_r_minus(m, resistive_loss))
 
         plus_l.add_updater(lambda m: m.set_opacity(abs(self.get_voltage_and_current()[0])/5))
-        plus_l.add_updater(lambda m: set_oriention_l_plus(self, m, magnetic_field))
+        plus_l.add_updater(lambda m: self.set_orientation_l_plus(m, magnetic_field))
         minus_l.add_updater(lambda m: m.set_opacity(abs(self.get_voltage_and_current()[0])/5))
-        minus_l.add_updater(lambda m: set_oriention_l_minus(self, m, magnetic_field))
+        minus_l.add_updater(lambda m: self.set_orientation_l_minus(m, magnetic_field))
 
         plus_c.add_updater(lambda m: m.set_opacity(abs(self.get_voltage_and_current()[0])/5))
-        plus_c.add_updater(lambda m: set_oriention_c_plus(self, m, dielectric_field))
+        plus_c.add_updater(lambda m: self.set_orientation_c_plus(m, dielectric_field))
         minus_c.add_updater(lambda m: m.set_opacity(abs(self.get_voltage_and_current()[0])/5))
-        minus_c.add_updater(lambda m: set_oriention_c_minus(self, m, dielectric_field))
+        minus_c.add_updater(lambda m: self.set_orientation_c_minus(m, dielectric_field))
 
         self.wait()
         self.play(FadeIn(r_label, l_label, c_label, frequency_label, va_label, 

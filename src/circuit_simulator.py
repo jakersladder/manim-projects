@@ -106,7 +106,7 @@ class RLC(Scene):
         # Create Frequency Text
         frequency_text = Text("Frequency = ", font_size=36).set_color(ORANGE)
         frequency_number = DecimalNumber(
-                    get_resonant_frequency(self.l, self.c),
+                    get_resonant_frequency(self.l.get_value(), self.c.get_value()),
                     num_decimal_places = 2
                 )
         frequency_units = Text("Hz", font_size=28, slant = ITALIC)
@@ -123,7 +123,7 @@ class RLC(Scene):
         r_number.add_updater(lambda m: m.set_value(self.r.get_value()))
         l_number.add_updater(lambda m: m.set_value(self.l.get_value()))
         c_number.add_updater(lambda m: m.set_value(self.c.get_value()))
-        frequency_number.add_updater(lambda m: m.set_value(get_resonant_frequency(self.l, self.c)))
+        frequency_number.add_updater(lambda m: m.set_value(get_resonant_frequency(self.l.get_value(), self.c.get_value())))
 
         # add objects and animations
         self.add(r_label, l_label, c_label, frequency_label, va_label)
