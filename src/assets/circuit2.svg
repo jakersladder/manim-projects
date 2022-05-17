@@ -1,0 +1,28 @@
+<svg width="268" height="212" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <title/>
+ <defs>
+  <linearGradient y2="NaN" y1="NaN" x2="NaN" x1="NaN" id="IWMTnCzrTMdC">
+   <stop stop-color="#FFFFFF" offset="0"/>
+   <stop stop-color="#FFFFFF" offset="1"/>
+  </linearGradient>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <path fill="#000000" fill-opacity="0.0" d="m0,0l268,0l0,212l-268,0l0,-212z" id="svg_2"/>
+  <path id="svg_4" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round" d="m70,50l48,0" paint-order="fill stroke markers" stroke="#FFFFFF" fill="none"/>
+  <path id="svg_5" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round" d="m78,50l120,0" paint-order="fill stroke markers" fill="none" stroke="#FFFFFF"/>
+  <path id="svg_8" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round" d="m198,50l0,52" paint-order="fill stroke markers" stroke="#FFFFFF" fill="none"/>
+  <path id="svg_9" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round" d="m210,102l-24,0" paint-order="fill stroke markers" stroke="#FFFFFF" fill="none"/>
+  <path id="svg_10" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round" d="m198,162l0,-52" paint-order="fill stroke markers" stroke="#FFFFFF" fill="none"/>
+  <path id="svg_11" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round" d="m210,110l-24,0" paint-order="fill stroke markers" stroke="#FFFFFF" fill="none"/>
+  <path id="svg_12" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round" d="m70,50l0,40" paint-order="fill stroke markers" stroke="#FFFFFF" fill="none"/>
+  <path id="svg_13" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round" d="m70,122l0,40" paint-order="fill stroke markers" stroke="#FFFFFF" fill="none"/>
+  <g id="svg_14" transform="matrix(0 1 -1 0 70 90)">
+   <path id="svg_15" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round" d="m0,0l0,0a5.33333,5.33333 0 0 1 10.66667,0l0,0" paint-order="fill stroke markers" stroke="#FFFFFF" fill="none"/>
+   <path id="svg_16" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round" d="m10.66667,0l0,0a5.33333,5.33333 0 0 1 10.66666,0l0,0" paint-order="fill stroke markers" stroke="#FFFFFF" fill="none"/>
+   <path id="svg_17" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round" d="m21.33333,0l0,0a5.33333,5.33333 0 0 1 10.66667,0l0,0" paint-order="fill stroke markers" stroke="#FFFFFF" fill="none"/>
+  </g>
+  <path id="svg_18" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round" d="m70,162l128,0" paint-order="fill stroke markers" stroke="#FFFFFF" fill="none"/>
+  <text id="svg_19" dominant-baseline="alphabetic" text-anchor="start" y="266" x="256" text-decoration="normal" font-weight="normal" font-style="normal" font-size="12px" font-family="sans-serif" fill="#ffffff" transform="matrix(1 0 0 1 -122 -110)"/>
+ </g>
+</svg>

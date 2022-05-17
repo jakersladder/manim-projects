@@ -1,0 +1,17 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+ <title>pendulum</title>
+
+ <g>
+  <title>Layer 1</title>
+  <line fill="none" x1="241" y1="181" x2="559" y2="181" id="svg_1" stroke-linejoin="undefined" stroke-linecap="undefined" stroke="#ffffff" stroke-width="4"/>
+  <line fill="none" stroke="#ffffff" x1="400" y1="180" x2="400" y2="347" id="svg_2" stroke-linejoin="undefined" stroke-linecap="undefined"/>
+  <ellipse fill="none" stroke="#ffffff" cx="400" cy="375.5" id="svg_4" rx="29.5" ry="29.5"/>
+  <line fill="none" x1="401" y1="182" x2="490" y2="313" id="svg_16" stroke-linejoin="undefined" stroke-linecap="undefined" stroke="#444444" opacity="0.25"/>
+  <line fill="none" x1="399" y1="183" x2="310" y2="314" id="svg_17" stroke-linejoin="undefined" stroke-linecap="undefined" stroke="#444444" opacity="0.25"/>
+  <ellipse fill="none" stroke="#444444" cx="506" cy="337.5" id="svg_18" rx="29.5" ry="29.5" opacity="0.25"/>
+  <ellipse fill="none" stroke="#444444" cx="293" cy="338.5" id="svg_19" rx="29.5" ry="29.5" opacity="0.25"/>
+  <path id="svg_7" d="m400,263" opacity="NaN" stroke="#444444" fill="#fff"/>
+  <path id="svg_22" d="m418.75293,263.74073l3.20304,-3.27828l-6.19293,0l-6.19291,0l0,-2.02941l0,-2.02941l6.12187,0c3.36702,0 6.12186,-0.10286 6.12186,-0.22858c0,-0.12572 -1.3404,-1.60094 -2.97867,-3.27828l-2.97868,-3.04971l2.75321,0l2.7532,0l4.20475,4.2971l4.20475,4.2971l-4.21282,4.28888l-4.21282,4.28888l-2.89846,0l-2.89846,0l3.20305,-3.27828l0,0z" stroke="#666666" fill="none"/>
+  <path stroke="#666666" id="svg_25" d="m381.20984,264.57316l-3.0429,-3.47112l5.8833,0l5.88328,0l0,-2.14879l0,-2.14879l-5.81579,0c-3.19868,0 -5.81579,-0.10891 -5.81579,-0.24202c0,-0.13311 1.27338,-1.69512 2.82974,-3.47112l2.82975,-3.2291l-2.61555,0l-2.61554,0l-3.99453,4.54987l-3.99452,4.54987l4.00219,4.54116l4.00219,4.54116l2.75354,0l2.75355,0l-3.04291,-3.47112l0,0z" fill="none"/>
+ </g>
+</svg>

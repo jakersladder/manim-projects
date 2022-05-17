@@ -26,14 +26,15 @@ class CircuitScene(Scene):
 
         Vc = self.Q / self.C.get_value()
         Vr = self.I * self.R.get_value()
+        current = Vr / self.R.get_value()
         Vl = -Vc - Vr
-        return Vc, -self.I, Vr, Vl
+        return Vc, current, Vr, Vl
 
     # Generates the plot Volatage by Time
     def generate_voltage_plot_c(self, axes):
         self.Q = self.C.get_value() * self.EMF
         self.I = 0
-        return axes.plot(lambda t: self.get_voltage_and_current()[0], [0, self.delta.get_value(), self.dt]).set_color(YELLOW)
+        return axes.plot(lambda t: self.get_voltage_and_current()[0], [0, self.delta.get_value(), self.dt]).set_color(PURPLE)
 
     # Generates the plot Current by Time
     def generate_current_plot(self, axes):
@@ -123,7 +124,7 @@ class CircuitScene(Scene):
         ellipse_1 = Ellipse(width=2.0, height=4.0, color=GREEN).set_fill(GREEN, opacity=0.5)
         ellipse_2 = Ellipse(width=2.0, height=4.0, color=GREEN).set_fill(GREEN, opacity=0.5)
         torus_1 = Group(ellipse_1,ellipse_2).arrange(buff=.1).scale(0.4).next_to(circuit, LEFT)
-        rect_1 = Rectangle(width=0.9, height=0.25).set_stroke(color=BLUE).set_fill(BLUE, opacity = 0.5)
+        rect_1 = Rectangle(width=0.9, height=0.25).set_stroke(color=PURPLE).set_fill(PURPLE, opacity = 0.5)
         star_1 = Star(16, outer_radius=2, density=6, color=RED).scale(0.5).stretch_to_fit_height(1.2).set_fill(RED, opacity = 0.5)
 
         # Assign and arrange shapes
