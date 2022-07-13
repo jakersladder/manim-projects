@@ -2,6 +2,7 @@ from manim import *
 import math
 import numpy as np
 from utils import * 
+from math_equations import *
 
 # Electric Circuit Simulator
 class ParametricScene(Scene):
@@ -17,6 +18,7 @@ class ParametricScene(Scene):
     time = ValueTracker(0.01)
     dt = .001 * time.get_value()
     delta = ValueTracker(0)
+    y_range = ValueTracker(5)
 
     # Returns varying inductance at time t
     def get_varying_inductance(self, t):
@@ -44,7 +46,7 @@ class ParametricScene(Scene):
     def generate_voltage_plot(self, axes):
         self.q = self.c.get_value() * self.emf
         self.i = 0
-        return axes.plot(lambda t: self.get_voltage_and_current(t)[0], [0, self.delta.get_value(), self.dt]).set_color(YELLOW)
+        return axes.plot(lambda t: self.get_voltage_and_current(t)[0], [0, self.delta.get_value(), self.dt]).set_color(PURPLE)
 
     # Generates the plot Current by Time
     def generate_current_plot(self, axes):
@@ -60,7 +62,7 @@ class ParametricScene(Scene):
     def generate_lvar_plot(self, axes):
         self.q = self.c.get_value() * self.emf
         self.i = 0
-        return axes.plot(lambda t: self.get_voltage_and_current(t)[3], [0, self.delta.get_value(), self.dt]).set_color(PURPLE)
+        return axes.plot(lambda t: self.get_voltage_and_current(t)[3], [0, self.delta.get_value(), self.dt]).set_color(ORANGE)
 
     # /// ORIENTERS ///
 
@@ -124,48 +126,71 @@ class ParametricScene(Scene):
 
     # Constructs the Scene
     def construct(self):
+#--------------------------------------CIRCUIT DIAGRAM------------------------------------------
+       
+        # Assign SVG
+        circuit = SVGMobject("src/assets/circuit-20220323-1531.svg")
+        rotor_disk = SVGMobject("src/assets/rotorDisk.svg")
 
+        # Define Shapes
+        ellipse_1 = Ellipse(width=2.0, height=4.0, color=GREEN).set_fill(GREEN, opacity=0.5)
+        ellipse_2 = Ellipse(width=2.0, height=4.0, color=GREEN).set_fill(GREEN, opacity=0.5)
+        torus_1 = Group(ellipse_1,ellipse_2).arrange(buff=.1).scale(0.4).next_to(circuit, LEFT)
+        rect_1 = Rectangle(width=0.9, height=0.25).set_stroke(color=PURPLE).set_fill(PURPLE, opacity = 0.5)
+        star_1 = Star(16, outer_radius=2, density=6, color=RED).scale(0.5).stretch_to_fit_height(1.2).set_fill(RED, opacity = 0.5)
+
+        # Assign and arrange shapes
+        magnetic_field = torus_1.next_to(circuit, LEFT)
+        dielectric_field = rect_1.next_to(circuit, RIGHT + 1.8 * RIGHT)
+        resistive_loss = star_1.next_to(circuit, UP + UP)
+
+        circuit_diagram = Group(circuit.scale(4), magnetic_field, dielectric_field, resistive_loss)
+
+#---GRAPHS AND LABELS--------------------------------------------------------------------------------------------------
+       
         # Create axes and and add updater
         graph_scale = 0.6
         axes = Axes(
-                x_range=[0, self.time.get_value(), self.time.get_value().round(4) / 10],
-                y_range=[-6, 6, 1],
+                x_range=[0, self.time.get_value().round(4), (self.time.get_value()/ 4).round(4)],
+                y_range=[-self.y_range.get_value(), self.y_range.get_value(), 1],
                 x_length=10,
                 axis_config={"color": WHITE},
-                x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(4), self.time.get_value().round(4) / 10)},
-                y_axis_config={"numbers_to_include": np.arange(-6.01, 6.01, 1)},        
+                x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(4), (self.time.get_value()/ 4).round(4))},
+                y_axis_config={"numbers_to_include": np.arange(-self.y_range.get_value(), self.y_range.get_value(), 1)},        
                 tips=False,
             ).scale(graph_scale).to_edge(DL, buff = 1.0)
         axes.add_updater(lambda mob: mob.become(Axes(
-                x_range=[0, self.time.get_value().round(4), self.time.get_value().round(4) / 10],
-                y_range=[-6, 6, 1],
+                x_range=[0, self.time.get_value().round(4), (self.time.get_value()/ 4).round(4)],
+                y_range=[-self.y_range.get_value(), self.y_range.get_value(), 1],
                 x_length=10,
                 axis_config={"color": WHITE},
-                x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(3), self.time.get_value().round(4) / 10)},
-                y_axis_config={"numbers_to_include": np.arange(-6.01, 6.01, 1)},          
+                x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(4), (self.time.get_value()/ 4).round(4))},
+                y_axis_config={"numbers_to_include": np.arange(-self.y_range.get_value(), self.y_range.get_value(), 1)},        
                 tips=False,
             ).scale(graph_scale).to_edge(DL, buff = 1.0)))
         # labels = axes.get_axis_labels('t', 'V,A')
         x_axis = axes.get_x_axis()
-        x_axis.add_updater(lambda mob: mob.set(x_range = [0, self.time.get_value(), .1]))
+        x_axis.add_updater(lambda mob: mob.set(x_range = [0, self.time.get_value(), self.time.get_value()/4]))
+        y_axis = axes.get_y_axis()
+        y_axis.add_updater(lambda mob: mob.set(y_range = [0, self.y_range.get_value(), self.y_range.get_value()/4]))
 
         lvar_axes = Axes(
-                x_range=[0, self.time.get_value(), self.time.get_value().round(4) / 10],
+                x_range=[0, self.time.get_value().round(4), (self.time.get_value()/ 4).round(4)],
                 y_range=[0, 0.3, 0.1],
                 x_length=10,
                 y_length=3,
                 axis_config={"color": WHITE},
-                x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(4), self.time.get_value().round(4) / 10)},
+                x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(4), (self.time.get_value()/ 4).round(4))},
                 y_axis_config={"numbers_to_include": np.arange(0, 0.3, 0.1)},        
                 tips=False,
             ).scale(graph_scale).next_to(axes, UP)
         lvar_axes.add_updater(lambda mob: mob.become(Axes(
-                x_range=[0, self.time.get_value(), self.time.get_value().round(4) / 10],
+                x_range=[0, self.time.get_value().round(4), (self.time.get_value()/ 4).round(4)],
                 y_range=[0, 0.3, 0.1],
                 x_length=10,
                 y_length=3,
                 axis_config={"color": WHITE},
-                x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(4), self.time.get_value().round(4) / 10)},
+                x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(4), (self.time.get_value()/ 4).round(4))},
                 y_axis_config={"numbers_to_include": np.arange(0, 0.3, 0.1)},        
                 tips=False,
             ).scale(graph_scale).next_to(axes, UP)))
@@ -216,21 +241,30 @@ class ParametricScene(Scene):
         )
         c_label.arrange(RIGHT).next_to(r_label, RIGHT)
 
+        # Create Para Frequency Text
+        var_freq_text = MathTex(r"f_{para} = ", font_size=28).set_color(ORANGE)
+        var_freq_number = DecimalNumber(
+                    2*get_resonant_frequency(self.l.get_value(), self.c.get_value()),
+                    num_decimal_places = 2
+                ).scale(graph_scale)
+        var_freq_units = MathTex(r"Hz", font_size=16)
+        var_freq_label = VGroup(var_freq_text, var_freq_number, var_freq_units)
+        var_freq_label.arrange(RIGHT).next_to(lvar_axes, UP).shift(0.3*DOWN)
+
         # Create Frequency Text
-        frequency_text = Text("Frequency = ", font_size=20).set_color(ORANGE)
+        frequency_text = MathTex(r"f_{res}=", font_size=28).set_color(GOLD_A)
         frequency_number = DecimalNumber(
                     get_resonant_frequency(self.l.get_value(), self.c.get_value()),
                     num_decimal_places = 2
                 ).scale(graph_scale)
-        frequency_units = Text("Hz", font_size=16, slant = ITALIC)
+        frequency_units = MathTex(r"Hz", font_size=16)
         frequency_label = VGroup(frequency_text, frequency_number, frequency_units)
-        frequency_label.arrange(RIGHT).next_to(axes, RIGHT)
+        frequency_label.arrange(RIGHT).next_to(var_freq_label, UP)
 
         # Create Voltage and Current Text
-        voltage_label, current_label = va_label = VGroup(
-            Text('VOLTAGE (V)', font_size=14).set_color(YELLOW),
+        va_label = VGroup(
             Text('CURRENT (I)', font_size=14).set_color(BLUE)
-        ).arrange(RIGHT).next_to(r_label, UP)
+        ).next_to(r_label, UP)
 
         # add updaters to decimal numbers
         r_number.add_updater(lambda m: m.set_value(self.r.get_value()))
@@ -238,19 +272,46 @@ class ParametricScene(Scene):
         c_number.add_updater(lambda m: m.set_value(self.c.get_value()))
         frequency_number.add_updater(lambda m: m.set_value(get_resonant_frequency(self.l.get_value(), self.c.get_value())))
 
+        slide_title = Text("Parametric Resonance", font_size=36).set_color(YELLOW).to_edge(UR)
+        para_title = Text("Series LCR Circuit", font_size=20).next_to(slide_title,DOWN)
+
+#----SCENE-----------------------------------------------------------------------------------------------------------------
+
         # add objects and animations
-        self.add(r_label, l_label, c_label, frequency_label, va_label)
-        self.add(axes, lvar_axes, voltage, current, resistor, l_var)
+        self.add(slide_title,para_title)
+        self.play(FadeIn(axes, lvar_axes))
+        self.wait()
 
-        # play animations
-        # self.wait()
-        self.play(self.delta.animate.set_value(self.time.get_value()), run_time = 10, rate_func = linear)
-       
-        self.play(self.time.animate.set_value(0.4), run_time = 2)
+        self.play(FadeIn(circuit.scale(0.6).to_edge(DR).shift(RIGHT+0.5*DOWN)))
+        self.wait()
+        self.play(FadeIn(rotor_disk.scale(0.75).next_to(circuit,LEFT).shift(1.9*RIGHT)))
+        self.wait()
+        self.play(Rotate(rotor_disk, angle=2*PI, rate_func=linear, run_time=4))
+        self.wait()
+        self.play(
+            FadeIn(
+                voltage, resistor, current, l_var, 
+                r_label, l_label, c_label, va_label,
+                var_freq_label, frequency_label
+            )
+        )
+        self.play(
+            Rotate(rotor_disk, angle=7*PI, rate_func=linear, run_time=10),
+            self.delta.animate.set_value(self.time.get_value()), run_time = 10, rate_func = linear
+        )
+        self.wait()
+        self.play(self.time.animate.set_value(0.04), run_time = 4)
+        self.wait()
+        self.play(
+            Rotate(rotor_disk, angle=21*PI, rate_func=linear, run_time=10),
+            self.delta.animate.set_value(self.time.get_value()), run_time = 10, rate_func = linear
+        )
+        self.wait()
 
-        # self.play(self.delta.animate.set_value(self.time.get_value()), run_time = 10, rate_func = linear)
 
-         # self.play(self.l.animate.set_value(0.5), run_time = 2)
+#---Backlog Animations----------------------------------------------------------------------------------------
+
+        # self.play(self.l.animate.set_value(0.5), run_time = 2)
         # self.play(self.c.animate.set_value(0.002), run_time = 2)
         # self.play(self.m.animate.set_value(0.5), run_time = 2)
 

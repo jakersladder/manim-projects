@@ -1,0 +1,45 @@
+from manim import *
+import math
+import numpy as np
+from math_equations import * 
+
+class ParaMath(Scene):
+    def construct(self):
+        slide_title = Text("Electric Parametric Oscilator", font_size=48).to_edge(UP, buff=0.5).set_color(YELLOW)
+        para_title = Text("Variation of L in LCR Ciruit", font_size=20).next_to(slide_title,DOWN)
+
+        res_eqs = VGroup(electric_res_eqs[0],electric_res_eqs[2]).arrange(RIGHT, buff = 1)
+        f_res_eqs = VGroup(electric_res_eqs[3],electric_res_eqs[4]).arrange(RIGHT, buff = 1)
+        self.add(slide_title)
+        self.play(Write(para_title))
+        self.wait()
+        self.play(Write(electric_eqs[1].next_to(para_title,DOWN,buff=0.5)))
+        self.wait()
+        self.play(TransformFromCopy(electric_eqs[1], electric_eqs[6].next_to(electric_eqs[1],DOWN,buff=0.5)))
+        self.wait()
+        self.play(TransformFromCopy(electric_eqs[6], electric_eqs[7].next_to(electric_eqs[6],DOWN,buff=0.5)))
+        self.wait()
+        self.play(TransformFromCopy(electric_eqs[7], electric_eqs[8].next_to(electric_eqs[7],DOWN,buff=0.5)))
+        self.wait()
+        self.play(FadeOut(electric_eqs[1],electric_eqs[6],electric_eqs[7]), electric_eqs[8].animate.move_to(ORIGIN))
+        self.wait()
+        self.play(TransformMatchingTex(electric_eqs[8], parametric_eqs[0]))
+        self.wait()
+        self.play(Indicate(parametric_eqs[0][5]))
+        self.wait()
+        self.play(Indicate(parametric_eqs[0][7]))
+        self.wait()
+        res_eqs.next_to(parametric_eqs,DOWN,buff=0.5)
+        f_res_eqs.next_to(parametric_eqs,DOWN,buff=0.5)
+        self.play(Write(electric_res_eqs[3]))
+        self.wait()
+        self.play(Write(electric_res_eqs[4]))
+        self.wait()
+        self.play(ReplacementTransform(electric_res_eqs[3],electric_res_eqs[0]))
+        self.wait()
+        self.play(ReplacementTransform(electric_res_eqs[4],electric_res_eqs[2]))
+        self.wait()
+        self.play(TransformMatchingTex(parametric_eqs[0], parametric_eqs[1]))
+        self.wait()
+        self.play(TransformMatchingTex(parametric_eqs[1], parametric_eqs[2]))
+        self.wait()
