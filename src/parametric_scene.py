@@ -1,3 +1,4 @@
+from tkinter import LEFT
 from manim import *
 import math
 import numpy as np
@@ -24,7 +25,7 @@ class ParametricScene(Scene):
     def get_varying_inductance(self, t):
         l_var = (
             self.l.get_value() * (
-            1 + (self.m.get_value() * np.sin(
+            1 + (self.m.get_value() * -np.sin(
             2 * PI * get_resonant_frequency(self.l.get_value(), self.c.get_value()) * 2 * t
             )))
         )
@@ -46,7 +47,7 @@ class ParametricScene(Scene):
     def generate_voltage_plot(self, axes):
         self.q = self.c.get_value() * self.emf
         self.i = 0
-        return axes.plot(lambda t: self.get_voltage_and_current(t)[0], [0, self.delta.get_value(), self.dt]).set_color(PURPLE)
+        return axes.plot(lambda t: self.get_voltage_and_current(t)[0], [0, self.delta.get_value(), self.dt]).set_color(YELLOW)
 
     # Generates the plot Current by Time
     def generate_current_plot(self, axes):
@@ -62,63 +63,63 @@ class ParametricScene(Scene):
     def generate_lvar_plot(self, axes):
         self.q = self.c.get_value() * self.emf
         self.i = 0
-        return axes.plot(lambda t: self.get_voltage_and_current(t)[3], [0, self.delta.get_value(), self.dt]).set_color(ORANGE)
+        return axes.plot(lambda t: self.get_voltage_and_current(t)[3], [0, self.delta.get_value(), self.dt]).set_color(GREEN)
 
     # /// ORIENTERS ///
 
     # for inductor
-    def set_oriention_l_plus(self, mobj, next):
+    def set_orientation_l_plus(self, mobj, next):
         if self.get_voltage_and_current(0)[0] > 0:
-            mobj.next_to(next, DL, buff=0)
+            mobj.next_to(next, DR, buff=0)
         else:
-            mobj.next_to(next, UL, buff=0)
+            mobj.next_to(next, UR, buff=0)
 
-    def set_oriention_l_minus(self, mobj, next):
+    def set_orientation_l_minus(self, mobj, next):
         if self.get_voltage_and_current(0)[0] > 0:
-            mobj.next_to(next, UL, buff=0)
+            mobj.next_to(next, UR, buff=0)
         else:
-            mobj.next_to(next, DL, buff=0)
+            mobj.next_to(next, DR, buff=0)
 
     # for resistor
-    def set_oriention_r_plus(self, mobj, next):
+    def set_orientation_r_plus(self, mobj, next):
         if self.get_voltage_and_current(0)[1] > 0:
             mobj.next_to(next, UR, buff=0)
         else:
             mobj.next_to(next, UL, buff=0)
 
-    def set_oriention_r_minus(self, mobj, next):
+    def set_orientation_r_minus(self, mobj, next):
         if self.get_voltage_and_current(0)[1] > 0:
             mobj.next_to(next, UL, buff=0)
         else:
             mobj.next_to(next, UR, buff=0)
 
     # for capacitor
-    def set_oriention_c_plus(self, mobj, next):
+    def set_orientation_c_plus(self, mobj, next):
         if self.get_voltage_and_current(0)[0] > 0:
             mobj.next_to(next, UR)
         else:
             mobj.next_to(next, DR)
 
-    def set_oriention_c_minus(self, mobj, next):
+    def set_orientation_c_minus(self, mobj, next):
         if self.get_voltage_and_current(0)[0] > 0:
             mobj.next_to(next, DR)
         else:
             mobj.next_to(next, UR)
 
     # for arrows
-    def set_orienation_l_arrow(self, mobj, next):
+    def set_orientation_l_arrow(self, mobj, next):
         if self.get_voltage_and_current(0)[1] > 0:
             mobj.put_start_and_end_on(start=DOWN, end=UP).next_to(next, RIGHT, buff=0.1).scale(0.4)
         else:
             mobj.put_start_and_end_on(start=UP, end=DOWN).next_to(next, RIGHT, buff=0.1).scale(0.4)
 
-    def set_orienation_r_arrow(self, mobj, next):
+    def set_orientation_r_arrow(self, mobj, next):
         if self.get_voltage_and_current(0)[1] > 0:
             mobj.put_start_and_end_on(start=LEFT, end=RIGHT).next_to(next, DOWN).scale(0.4)
         else:
             mobj.put_start_and_end_on(start=RIGHT, end=LEFT).next_to(next, DOWN).scale(0.4)
 
-    def set_orienation_c_arrow(self, mobj, next):
+    def set_orientation_c_arrow(self, mobj, next):
         if self.get_voltage_and_current(0)[1] > 0:
             mobj.put_start_and_end_on(start=UP, end=DOWN).next_to(next, LEFT).scale(0.4)
         else:
@@ -146,6 +147,7 @@ class ParametricScene(Scene):
 
         circuit_diagram = Group(circuit.scale(4), magnetic_field, dielectric_field, resistive_loss)
 
+
 #---GRAPHS AND LABELS--------------------------------------------------------------------------------------------------
        
         # Create axes and and add updater
@@ -154,18 +156,14 @@ class ParametricScene(Scene):
                 x_range=[0, self.time.get_value().round(4), (self.time.get_value()/ 4).round(4)],
                 y_range=[-self.y_range.get_value(), self.y_range.get_value(), 1],
                 x_length=10,
-                axis_config={"color": WHITE},
-                x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(4), (self.time.get_value()/ 4).round(4))},
-                y_axis_config={"numbers_to_include": np.arange(-self.y_range.get_value(), self.y_range.get_value(), 1)},        
+                axis_config={"color": WHITE},    
                 tips=False,
             ).scale(graph_scale).to_edge(DL, buff = 1.0)
         axes.add_updater(lambda mob: mob.become(Axes(
                 x_range=[0, self.time.get_value().round(4), (self.time.get_value()/ 4).round(4)],
                 y_range=[-self.y_range.get_value(), self.y_range.get_value(), 1],
                 x_length=10,
-                axis_config={"color": WHITE},
-                x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(4), (self.time.get_value()/ 4).round(4))},
-                y_axis_config={"numbers_to_include": np.arange(-self.y_range.get_value(), self.y_range.get_value(), 1)},        
+                axis_config={"color": WHITE},      
                 tips=False,
             ).scale(graph_scale).to_edge(DL, buff = 1.0)))
         # labels = axes.get_axis_labels('t', 'V,A')
@@ -179,9 +177,7 @@ class ParametricScene(Scene):
                 y_range=[0, 0.3, 0.1],
                 x_length=10,
                 y_length=3,
-                axis_config={"color": WHITE},
-                x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(4), (self.time.get_value()/ 4).round(4))},
-                y_axis_config={"numbers_to_include": np.arange(0, 0.3, 0.1)},        
+                axis_config={"color": WHITE},       
                 tips=False,
             ).scale(graph_scale).next_to(axes, UP)
         lvar_axes.add_updater(lambda mob: mob.become(Axes(
@@ -189,9 +185,7 @@ class ParametricScene(Scene):
                 y_range=[0, 0.3, 0.1],
                 x_length=10,
                 y_length=3,
-                axis_config={"color": WHITE},
-                x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(4), (self.time.get_value()/ 4).round(4))},
-                y_axis_config={"numbers_to_include": np.arange(0, 0.3, 0.1)},        
+                axis_config={"color": WHITE},      
                 tips=False,
             ).scale(graph_scale).next_to(axes, UP)))
         lvar_x_axis = lvar_axes.get_x_axis()
@@ -272,17 +266,83 @@ class ParametricScene(Scene):
         c_number.add_updater(lambda m: m.set_value(self.c.get_value()))
         frequency_number.add_updater(lambda m: m.set_value(get_resonant_frequency(self.l.get_value(), self.c.get_value())))
 
-        slide_title = Text("Parametric Resonance", font_size=36).set_color(YELLOW).to_edge(UR)
+        # ARROWS and PLUS MINUS
+        op_ratio_v = 0.1
+        op_ratio_i = 100
+        arrow_l = Arrow(start=DOWN, end=UP, color = BLUE, tip_length=0.2)
+        arrow_c = Arrow(start=UP, end=DOWN, color = BLUE, tip_length=0.2)
+        arrow_r = Arrow(start=LEFT, end=RIGHT, color = BLUE, tip_length=0.2)
+
+        plus_l = Text("+", font_size=20).set_color(YELLOW).next_to(magnetic_field, DL, buff=0)
+        minus_l = Text("-", font_size=40).set_color(YELLOW).next_to(magnetic_field, UL, buff=0)
+        plus_c = Text("+", font_size=20).set_color(YELLOW).next_to(dielectric_field, UR)
+        minus_c = Text("-", font_size=40).set_color(YELLOW).next_to(dielectric_field, DR)
+        plus_r = Text("+", font_size=20).set_color(RED_B).next_to(resistive_loss, UL, buff=0)
+        minus_r = Text("-", font_size=40).set_color(RED_B).next_to(resistive_loss, UR, buff=0)
+
+        arrow_l.add_updater(lambda m: m.set_opacity(abs(self.i*1000)))
+        arrow_l.add_updater(lambda m: self.set_orientation_l_arrow(m, magnetic_field))
+        arrow_c.add_updater(lambda m: m.set_opacity(abs(self.i*1000)))
+        arrow_c.add_updater(lambda m: self.set_orientation_c_arrow(m, dielectric_field))
+        arrow_r.add_updater(lambda m: m.set_opacity(abs(self.i*1000)))
+        arrow_r.add_updater(lambda m: self.set_orientation_r_arrow(m, resistive_loss))
+
+        plus_l.add_updater(lambda m: m.set_opacity(abs(axes.i2gc(self.delta.get_value(),voltage)[1])*9))
+        plus_l.add_updater(lambda m: self.set_orientation_l_plus(m, magnetic_field))
+        minus_l.add_updater(lambda m: m.set_opacity(abs(axes.i2gc(self.delta.get_value(),voltage)[1])*9))
+        minus_l.add_updater(lambda m: self.set_orientation_l_minus(m, magnetic_field))
+
+        plus_c.add_updater(lambda m: m.set_opacity(abs(axes.i2gc(self.delta.get_value(),voltage)[1])*9))
+        plus_c.add_updater(lambda m: self.set_orientation_c_plus(m, dielectric_field))
+        minus_c.add_updater(lambda m: m.set_opacity(abs(axes.i2gc(self.delta.get_value(),voltage)[1])*9))
+        minus_c.add_updater(lambda m: self.set_orientation_c_minus(m, dielectric_field))
+
+        plus_r.add_updater(lambda m: m.set_opacity(abs(axes.i2gc(self.delta.get_value(),resistor)[1])*9))
+        plus_r.add_updater(lambda m: self.set_orientation_r_plus(m, resistive_loss))
+        minus_r.add_updater(lambda m: m.set_opacity(abs(axes.i2gc(self.delta.get_value(),resistor)[1])*9))
+        minus_r.add_updater(lambda m: self.set_orientation_r_minus(m, resistive_loss))
+
+        ellipse_1.add_updater(lambda m: m.set_opacity(abs(self.i*op_ratio_i)))
+        ellipse_2.add_updater(lambda m: m.set_opacity(abs(self.i*op_ratio_i)))
+        dielectric_field.add_updater(lambda m: m.set_opacity(abs(axes.i2gc(self.delta.get_value(),voltage)[1]*op_ratio_v)))
+        star_1.add_updater(lambda m: m.set_opacity(abs(self.i*op_ratio_i)))
+
+        slide_title = Text("Parametric Resonance", font_size=48).set_color(YELLOW).to_edge(UP,buff=0.5)
         para_title = Text("Series LCR Circuit", font_size=20).next_to(slide_title,DOWN)
+        para_title.add_updater(lambda m: m.next_to(slide_title,DOWN))
+
+        avg = MathTex(r"L",r"_{o}",font_size=28).set_color_by_tex("L",GREEN)
+        l_avg = DashedVMobject(
+            lvar_axes.plot(lambda t: self.l.get_value(), [0,self.time.get_value(),self.dt]),
+            num_dashes = 30,
+            dashed_ratio = 0.25
+        ).set_opacity(0.8)
+        l_low = DashedVMobject(
+            lvar_axes.plot(lambda t: self.l.get_value() - (self.m.get_value() * self.l.get_value()), [0,self.time.get_value(),self.dt]),
+            num_dashes = 30,
+            dashed_ratio = 0.25
+        ).set_color(GREEN_B).set_opacity(0.8)
+        l_high = DashedVMobject(
+            lvar_axes.plot(lambda t: self.l.get_value() + (self.m.get_value() * self.l.get_value()), [0,self.time.get_value(),self.dt]),
+            num_dashes = 30,
+            dashed_ratio = 0.25   
+        ).set_color(GREEN_E).set_opacity(0.8)
+        eng_group = VGroup(
+            MathTex(r"W_{\Delta", r"L}",r"=",r"\frac{1}{2}",r"\Delta",r"L",r"i",r"^{2}").set_color_by_tex("L",GREEN).set_color_by_tex("i",BLUE),
+            MathTex(r"W_{",r"R}",r"=",r"R",r"i",r"^{2}t").set_color_by_tex("R",RED).set_color_by_tex("i",BLUE)
+        ).arrange(DOWN, buff = 0.5)
+        eng_inequality = MathTex(r"\frac{1}{2}",r"\Delta",r"L",r"i",r"^{2}",r">",r"R",r"i",r"^{2}t").set_color_by_tex("L",GREEN).set_color_by_tex("R",RED).set_color_by_tex("i",BLUE)
 
 #----SCENE-----------------------------------------------------------------------------------------------------------------
 
         # add objects and animations
-        self.add(slide_title,para_title)
+        self.add(slide_title,para_title).remove(axes,lvar_axes)
+        self.wait()
+        self.play(slide_title.animate.to_edge(UR).scale(0.75).shift(RIGHT))
+        self.wait()
         self.play(FadeIn(axes, lvar_axes))
         self.wait()
-
-        self.play(FadeIn(circuit.scale(0.6).to_edge(DR).shift(RIGHT+0.5*DOWN)))
+        self.remove(magnetic_field,dielectric_field,resistive_loss).play(FadeIn(circuit_diagram.scale(0.6).to_edge(DR).shift(0.5*RIGHT+0.5*DOWN)))
         self.wait()
         self.play(FadeIn(rotor_disk.scale(0.75).next_to(circuit,LEFT).shift(1.9*RIGHT)))
         self.wait()
@@ -292,19 +352,26 @@ class ParametricScene(Scene):
             FadeIn(
                 voltage, resistor, current, l_var, 
                 r_label, l_label, c_label, va_label,
-                var_freq_label, frequency_label
+                l_avg, l_high, l_low, avg.next_to(l_avg,LEFT)
             )
         )
+        self.wait()
+        self.play(FadeIn(eng_group.next_to(para_title,DOWN,buff=0.5).scale(0.75)))
+        self.wait()
+        self.play(FadeOut(eng_group), FadeIn(eng_inequality.move_to(eng_group.get_center()).scale(0.75)))
+        self.wait()
+        self.add(arrow_l, arrow_c, arrow_r, plus_l, plus_c, plus_r, minus_l, minus_c, minus_r)
         self.play(
             Rotate(rotor_disk, angle=7*PI, rate_func=linear, run_time=10),
             self.delta.animate.set_value(self.time.get_value()), run_time = 10, rate_func = linear
         )
         self.wait()
+
         self.play(self.time.animate.set_value(0.04), run_time = 4)
         self.wait()
         self.play(
-            Rotate(rotor_disk, angle=21*PI, rate_func=linear, run_time=10),
-            self.delta.animate.set_value(self.time.get_value()), run_time = 10, rate_func = linear
+            Rotate(rotor_disk, angle=21*PI, rate_func=linear, run_time=15),
+            self.delta.animate.set_value(self.time.get_value()), run_time = 20, rate_func = linear
         )
         self.wait()
 

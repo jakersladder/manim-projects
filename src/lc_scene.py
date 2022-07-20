@@ -28,13 +28,18 @@ class LCScene(Scene):
         Vc = self.Q / self.C.get_value()
         Vr = self.I * self.R.get_value()
         Vl = -Vc - Vr
-        return Vc, self.I, Vr, Vl
+        return Vc, -self.I, Vr, Vl
+
+    def generate_loss_plot(self, axes):
+        self.Q = self.C.get_value() * self.EMF
+        self.I = 0
+        return axes.plot(lambda t: self.get_voltage_and_current()[0] * (1 - np.exp((self.R * t) / self.L))).set_color(GRAY_B)
 
     # Generates the plot Volatage by Time
     def generate_voltage_plot_c(self, axes):
         self.Q = self.C.get_value() * self.EMF
         self.I = 0
-        return axes.plot(lambda t: self.get_voltage_and_current()[0], [0, self.delta.get_value(), self.dt]).set_color(PURPLE)
+        return axes.plot(lambda t: self.get_voltage_and_current()[0], [0, self.delta.get_value(), self.dt]).set_color(YELLOW)
 
     # Generates the plot Current by Time
     def generate_current_plot(self, axes):
@@ -50,7 +55,7 @@ class LCScene(Scene):
     def generate_voltage_plot_l(self, axes):
         self.Q = self.C.get_value() * self.EMF
         self.I = 0
-        return axes.plot(lambda t: self.get_voltage_and_current()[3], [0, self.delta.get_value(), self.dt]).set_color(GREEN)
+        return axes.plot(lambda t: self.get_voltage_and_current()[3], [0, self.delta.get_value(), self.dt]).set_color(GOLD)
 
     # /// ORIENTERS ///
 
@@ -145,9 +150,12 @@ class LCScene(Scene):
         voltage = self.generate_voltage_plot_c(axes)
         current = self.generate_current_plot(axes)
         l_voltage = self.generate_voltage_plot_l(axes)
+        loss = self.generate_loss_plot(axes)
         voltage.add_updater(lambda mob: mob.become(self.generate_voltage_plot_c(axes)))
         current.add_updater(lambda mob: mob.become(self.generate_current_plot(axes)))
         l_voltage.add_updater(lambda mob: mob.become(self.generate_voltage_plot_l(axes)))
+        loss.add_updater(lambda mob: mob.become(self.generate_loss_plot(axes)))
+
 
 #-------------------------------------------TEXT-----------------------------------------------
 
@@ -156,7 +164,7 @@ class LCScene(Scene):
             Text("L = ", font_size=18).set_color(GREEN),
             DecimalNumber(
                 self.L.get_value(),
-                num_decimal_places = 6
+                num_decimal_places = 2
             ).scale(graph_scale),
             Text("H", font_size=14, slant = ITALIC).set_color(WHITE)
         ).arrange(RIGHT)
@@ -165,10 +173,11 @@ class LCScene(Scene):
             Text("C = ", font_size=18).set_color(PURPLE),
             DecimalNumber(
                 self.C.get_value(),
-                num_decimal_places = 6
+                num_decimal_places = 4
             ).scale(graph_scale),
             Text("F", font_size=14, slant = ITALIC).set_color(WHITE)
         ).arrange(RIGHT)
+        current_eq = MathTex(r"I",r"=",r"\frac{Q}{t}", font_size=32).set_color_by_tex("I", BLUE)
         lc_label = VGroup(l_label, c_label).arrange(RIGHT).next_to(axes, DOWN)
         
         # Create Frequency Text
@@ -199,28 +208,29 @@ class LCScene(Scene):
         # add objects and animations
         self.add(slide_title)
         self.play(Write(electric_title))
-        self.play(FadeIn(circuit_diagram2.shift(DOWN)))
         self.wait()
-        self.play(FadeIn(magnetic_field, dielectric_field))
+        self.play(FadeIn(circuit_diagram2.shift(DOWN)))
         self.wait()
         self.play(circuit_diagram2.animate.scale(0.6).to_edge(DR))
         self.wait()
         
         volt_eqs = VGroup(
-            voltage_eqs[0].set_color_by_tex("L", GREEN).set_color_by_tex("C", PURPLE).set_color_by_tex("R", RED),
-            voltage_eqs[2].set_color_by_tex("L", GREEN).set_color_by_tex("C", PURPLE).set_color_by_tex("R", RED)
+            voltage_eqs[0].set_color_by_tex("L", GREEN).set_color_by_tex("C", PURPLE).set_color_by_tex("R", RED).set_color_by_tex("V", GOLD),
+            voltage_eqs[2].set_color_by_tex("L", GREEN).set_color_by_tex("C", PURPLE).set_color_by_tex("R", RED).set_color_by_tex("V", YELLOW)
         ).arrange(RIGHT, buff=0.5)
-        self.play(FadeIn(volt_eqs.next_to(circuit2, UP).shift(0.7*DOWN)))
+        self.play(FadeIn(volt_eqs.next_to(circuit2, UP).shift(0.7*DOWN)), FadeIn(current_eq.next_to(circuit2,DOWN).shift(UP*0.85)))
+        self.wait()
 
         blackbox = Rectangle(color=BLACK, width=1, height=1).set_fill(BLACK, opacity=1.0)
         self.play(FadeOut(magnetic_field), FadeIn(blackbox.next_to(circuit2, DOWN).shift(2*UP)))
+        self.wait()
 
         # ARROWS and PLUS MINUS
         arrow_l = Arrow(start=DOWN, end=UP, color = BLUE, tip_length=0.2)
         arrow_c = Arrow(start=UP, end=DOWN, color = BLUE, tip_length=0.2)
 
-        plus_l = Text("+", font_size=20).set_color(YELLOW).next_to(magnetic_field, DL, buff=0)
-        minus_l = Text("-", font_size=40).set_color(YELLOW).next_to(magnetic_field, UL, buff=0)
+        plus_l = Text("+", font_size=20).set_color(GOLD).next_to(magnetic_field, DL, buff=0)
+        minus_l = Text("-", font_size=40).set_color(GOLD).next_to(magnetic_field, UL, buff=0)
         plus_c = Text("+", font_size=20).set_color(YELLOW).next_to(dielectric_field, UR)
         minus_c = Text("-", font_size=40).set_color(YELLOW).next_to(dielectric_field, DR)
 
@@ -252,3 +262,4 @@ class LCScene(Scene):
         self.remove(blackbox)
         self.add(magnetic_field, arrow_l, arrow_c, plus_l, plus_c, minus_l, minus_c)
         self.play(self.delta.animate.set_value(self.time.get_value()), run_time = 12, rate_func = linear)
+        self.wait()

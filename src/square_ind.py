@@ -158,7 +158,6 @@ class SquareInd(Scene):
                 x_length=8,
                 y_length=3,
                 axis_config={"color": WHITE},
-                # x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value()+0.00001,self.time.get_value())},        
                 tips=False,
         )
         axes_2 = Axes(
@@ -167,7 +166,6 @@ class SquareInd(Scene):
             x_length=8,
             y_length=3,
             axis_config={"color": WHITE},
-            # x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value()+0.00001,self.time.get_value())},        
             tips=False,
         )
         axes_ind = Axes(
@@ -176,8 +174,6 @@ class SquareInd(Scene):
             x_length=8,
             y_length=2,
             axis_config={"color": WHITE},
-            # x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value()+0.00001,self.time.get_value())}, 
-            # y_axis_config={"numbers_to_include": np.arange(0.025-0.00000001, 0.075+0.0000001,0.025)},       
             tips=False,
         )
 
@@ -190,8 +186,8 @@ class SquareInd(Scene):
             MathTex(r"W",r"_{",r"C}",r"=",r"\frac{1}{2}",r"\cdot",r"C",r"_{o}",r"\cdot",r"e",r"^{2}", font_size=40),
         ).arrange(DOWN,buff=0.5)
         frequency_eqs = VGroup(
-            MathTex(r"\omega",r"_{para}",r"=",r"2",r"\omega",r"_{o}", font_size=40),
-            MathTex(r"\omega",r"_{o}",r"=",r"2\pi",r"\frac{1}{",r"\sqrt{",r"L",r"_{o}",r"C}}", font_size=40).set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE)
+            MathTex(r"\omega",r"_{o}",r"=",r"2\pi",r"\frac{1}{",r"\sqrt{",r"L",r"_{o}",r"C}}", font_size=40).set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE),
+            MathTex(r"\omega",r"_{para}",r"=",r"2",r"\omega",r"_{o}", font_size=40)
         ).arrange(DOWN,buff=0.5)
         energy_eqs[0].set_color_by_tex("L",GREEN_B).set_color_by_tex("-\Delta",GREEN_B).set_color_by_tex("i",BLUE)
         energy_eqs[1].set_color_by_tex("C",PURPLE).set_color_by_tex("e",YELLOW)        
@@ -254,10 +250,14 @@ class SquareInd(Scene):
         self.remove(magnetic_field, dielectric_field)
         self.play(FadeIn(circuit_diagram2.scale(0.6).next_to(axes_2,RIGHT).shift(0.4*LEFT)))
         self.wait()
-        self.remove(magnetic_field, dielectric_field)
-        self.play(FadeIn(frequency_eqs.next_to(circuit_diagram2,UP).shift(0.5*DOWN)))
+        energy_eqs.next_to(circuit_diagram2,UP).shift(0.8*DOWN)
+        para_energy_eqs.next_to(circuit_diagram2,UP).shift(0.8*DOWN)
+        self.play(FadeIn(energy_eqs[0]))
         self.wait()
-        para_energy_eqs.next_to(circuit_diagram2,UP).shift(0.5*DOWN)
+        self.play(FadeIn(energy_eqs[1]))
+        self.wait()
+        self.play(FadeOut(magnetic_field, dielectric_field))
+        self.wait()
         
         # ARROWS and PLUS MINUS
         arrow_l = Arrow(start=DOWN, end=UP, color = BLUE, tip_length=0.2)
@@ -304,21 +304,16 @@ class SquareInd(Scene):
             dashed_ratio = 0.25   
         ).set_color(GREEN_E).set_opacity(0.8)
 
-        self.play(FadeIn(l_avg), FadeIn(avg.next_to(l_avg,RIGHT)))
         self.wait()
         self.play(FadeIn(l_low), FadeIn(low.next_to(l_low,RIGHT)))
-        self.wait()
-        self.play(FadeIn(l_high), FadeIn(high.next_to(l_high,RIGHT)))
-        self.wait()
-        
-        self.play(FadeOut(frequency_eqs))
-        self.play(FadeIn(energy_eqs.next_to(circuit_diagram2,UP).shift(0.5*DOWN)))
         self.wait()
 
         self.add(magnetic_field, dielectric_field)
         self.add(arrow_l,arrow_c,plus_l,minus_l,plus_c,minus_c)
 
         self.play(self.delta.animate.set_value(0.0001),run_time=10,rate_func=linear)
+        self.wait()
+        self.play(FadeIn(l_high), FadeIn(high.next_to(l_high,RIGHT)))
         self.wait()
         self.play(self.delta.animate.set_value(0.000113),run_time=2,rate_func=linear)
         self.wait()
@@ -349,6 +344,12 @@ class SquareInd(Scene):
         self.play(self.delta.animate.set_value(self.time.get_value()),run_time=5,rate_func=linear)
         self.wait()
         self.play(FadeOut(inductance_dot, current_dot, voltage_dot))
+        self.wait()
+        self.play(FadeOut(energy_eqs[0],energy_eqs[1],para_energy_eqs))
+        self.wait()
+        self.play(FadeIn(l_avg), FadeIn(avg.next_to(l_avg,RIGHT)))
+        self.wait()
+        self.play(FadeIn(frequency_eqs.next_to(circuit_diagram2,UP).shift(0.5*DOWN)))
         self.wait()
         self.play(
             ReplacementTransform(voltage, normal_voltage),

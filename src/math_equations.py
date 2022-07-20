@@ -4,23 +4,23 @@ import numpy as np
 from utils import * 
 
 
-slide_title = Text("Simple Harmonic Oscillators", font_size=48).to_edge(UP, buff=1).set_color(ORANGE)
+slide_title = Text("Simple Harmonic Oscillators", font_size=48).to_edge(UP, buff=0.5).set_color(ORANGE)
 
 # Electric Resonance Equations
 electric_eqs = VGroup(
-    MathTex(r"V_{L}",r"+",r"V_{R}",r"+",r"V_{C}",r"=",r"V_{T}"),
-    MathTex(r"V_{L}",r"+",r"V_{R}",r"+",r"V_{C}",r"=",r"0"),
-    MathTex(r"V_{L}",r"+",r"V_{R}",r"+",r"\frac{Q}{C}",r"=",r"0"),
-    MathTex(r"V_{L}",r"+",r"\frac{d Q}{d t} R",r"+",r"\frac{Q}{C}",r"=",r"0"),
-    MathTex(r"\frac{d^2 Q}{d t^2}",r"L",r"+",r"\frac{d Q}{d t}",r"R",r"+",r"\frac{Q}{",r"C}",r"=",r"0"),
-    MathTex(r"\frac{d^2 Q}{d t^2}",r"L",r"+",r"\frac{d Q}{d t}",r"R",r"+",r"\frac{Q}{",r"C}",r"=",r"0"),
-    MathTex(r"\frac{d I}{d t}",r"L",r"+",r"I",r"R",r"+",r"\frac{1}{",r"C}",r"\int I d t",r"=",r"0"),
-    MathTex(r"\frac{d^2 Q}{d t^2}",r"L",r"+",r"\frac{d Q}{d t}",r"R",r"+",r"\frac{Q}{",r"C}",r"=",r"0"),
-    MathTex(r"\ddot{Q}",r"L",r"+",r"\dot{Q}",r"R",r"+",r"Q",r"\frac{1}{",r"C}",r"=",r"0"),
-    MathTex(r"L",r"\ddot{Q}",r"+",r"\frac{1}{",r"C}",r"Q",r"=",r"0"),
-    MathTex(r"\ddot{Q}",r"+",r"\frac{1}{",r"L",r"C}",r"Q",r"=",r"0"),
-    MathTex(r"\ddot{Q}",r"=",r"-",r"\frac{1}{",r"L",r"C}",r"Q"),
-    MathTex(r"\ddot{Q}",r"=",r"-",r"\omega^2",r"Q")
+    MathTex(r"V_{L}",r"+",r"V_{R}",r"+",r"V_{C}",r"=",r"V_{T}").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"V_{L}",r"+",r"V_{R}",r"+",r"V_{C}",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"V_{L}",r"+",r"V_{R}",r"+",r"\frac{Q}{C}",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"V_{L}",r"+",r"\frac{d Q}{d t} R",r"+",r"\frac{Q}{C}",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\frac{d^2 Q}{d t^2}",r"L",r"+",r"\frac{d Q}{d t}",r"R",r"+",r"\frac{Q}{",r"C}",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\frac{d^2 Q}{d t^2}",r"L",r"+",r"\frac{d Q}{d t}",r"R",r"+",r"\frac{Q}{",r"C}",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\frac{d I}{d t}",r"L",r"+",r"I",r"R",r"+",r"\frac{1}{",r"C}",r"\int I d t",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\frac{d^2 Q}{d t^2}",r"L",r"+",r"\frac{d Q}{d t}",r"R",r"+",r"\frac{Q}{",r"C}",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\ddot{Q}",r"L",r"+",r"\dot{Q}",r"R",r"+",r"Q",r"\frac{1}{",r"C}",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"L",r"\ddot{Q}",r"+",r"\frac{1}{",r"C}",r"Q",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\ddot{Q}",r"+",r"\frac{1}{",r"L",r"C}",r"Q",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\ddot{Q}",r"=",r"-",r"\frac{1}{",r"L",r"C}",r"Q").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\ddot{Q}",r"=",r"-",r"\omega^2",r"Q").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED)
 )
 # Voltage Equations
 voltage_eqs = VGroup(
@@ -30,18 +30,26 @@ voltage_eqs = VGroup(
 )
 # Electric Parametric Equations
 parametric_eqs = VGroup(
-    MathTex(r"\ddot{Q}",r"L",r"_{o}",r"(1",r"+",r"m",r"\sin",r"\omega_{p}",r"t)",r"+",r"\dot{Q}",r"R",r"+",r"Q",r"\frac{1}{",r"C}",r"=",r"0"),
-    MathTex(r"\ddot{Q}",r"(",r"L_{o}",r"+",r"L_{o}",r"m",r"\sin",r"\omega_{p}",r"t)",r"+",r"\dot{Q}",r"R",r"+",r"Q",r"\frac{1}{",r"C}",r"=",r"0"),
-    MathTex(r"\ddot{Q}",r"(",r"L_{o}",r"+",r"L_{\Delta }",r"\sin",r"\omega_{p}",r"t)",r"+",r"\dot{Q}",r"R",r"+",r"Q",r"\frac{1}{",r"C}",r"=",r"0"),
-    MathTex(r"\frac{dI}{dt}(L_{o}+L_{o}m\sin (\omega _{p}) ) + I R + \frac{1}{C}\int I d t",r"=",r"0"),
+    MathTex(r"\ddot{Q}",r"L",r"_{o}",r"(1",r"+",r"m",r"\sin",r"(",r"\omega_{p}",r"t)",r")",r"+",r"\dot{Q}",r"R",r"+",r"Q",r"\frac{1}{",r"C}",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\ddot{Q}",r"(",r"L_{o}",r"+",r"L_{o}",r"m",r"\sin",r"(",r"\omega_{p}",r"t)",r")",r"+",r"\dot{Q}",r"R",r"+",r"Q",r"\frac{1}{",r"C}",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\ddot{Q}",r"(",r"L_{o}",r"+",r"L_{\Delta }",r"\sin",r"(",r"\omega_{p}",r"t)",r")",r"+",r"\dot{Q}",r"R",r"+",r"Q",r"\frac{1}{",r"C}",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\frac{dI}{dt}(L_{o}+L_{o}m\sin (\omega _{p}) ) + I R + \frac{1}{C}\int I d t",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\ddot{Q}",r"(",r"L_{o}",r"+",r"L_{\Delta }",r"\sin",r"(",r"\omega_{p}",r"t)",r")",r"+",r"Q",r"\frac{1}{",r"C}",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\ddot{Q}",r"L_{o}",r"+",r"\ddot{Q}",r"L_{\Delta }",r"\sin",r"(",r"\omega_{p}",r"t",r")",r"+",r"Q",r"\frac{1}{",r"C}",r"=",r"0").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\ddot{Q}",r"L_{o}",r"+",r"Q",r"\frac{1}{",r"C}",r"=",r"-",r"\ddot{Q}",r"L_{\Delta }",r"\sin",r"(",r"\omega_{p}",r"t",r")").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"m",r"\ddot{x}",r"+",r"k",r"x",r"=",r"F",r"\sin",r" (\omega t)"),
+    MathTex(r"\ddot{x}",r"m",r"+",r"x",r"k",r"=",r"F",r"\sin",r" (\omega t)"),
+    MathTex(r"\ddot{Q}",r"L",r"+",r"Q",r"\frac{1}{",r"C}",r"=",r"V_{d}",r"\sin",r"(\omega",r"t+\phi)"),
+    MathTex(r"\ddot{Q}",r"L_{o}",r"+",r"\dot{Q}",r"R",r"+",r"Q",r"\frac{1}{",r"C}",r"=",r"-",r"\ddot{Q}",r"L_{\Delta }",r"\sin",r"(",r"\omega_{p}",r"t",r")").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\ddot{Q}",r"L",r"+",r"\dot{Q}",r"R",r"+",r"Q",r"\frac{1}{",r"C}",r"=",r"V_{d}",r"\sin",r"(\omega",r"t+\phi)"),
 )
 # Electric Resonant Frequency Equations
 electric_res_eqs = VGroup(
-    MathTex(r"\omega_{r}",r"=",r"2\pi",r"\frac{1}{",r"\sqrt{",r"L",r"C}}"),
-    MathTex(r"\omega^2",r"=",r"\frac{1}{",r"L",r"C}"),
-    MathTex(r"\omega_{p} = 2\cdot \omega_{r}"),
-    MathTex(r"f_{r}",r"=",r"\frac{1}{",r"\sqrt{",r"L",r"C}}"),
-    MathTex(r"f_{p} = 2\cdot f_{r}")
+    MathTex(r"\omega_{r}",r"=",r"2\pi",r"\frac{1}{",r"\sqrt{",r"L",r"C}}").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\omega^2",r"=",r"\frac{1}{",r"L",r"C}").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"\omega_{p}", r"=", r"2\cdot" ,r"\omega_{r}").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"f_{r}",r"=",r"\frac{1}{",r"\sqrt{",r"L",r"C}}").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED),
+    MathTex(r"f_{p} = 2\cdot f_{r}").set_color_by_tex("L",GREEN).set_color_by_tex("C",PURPLE).set_color_by_tex("R",RED)
 )
 # Spring Resonance Equations
 spring_title = Text("Mass on a Spring", font_size=32).next_to(slide_title, DOWN)

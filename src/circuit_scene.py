@@ -28,29 +28,37 @@ class CircuitScene(Scene):
         Vc = self.Q / self.C.get_value()
         Vr = self.I * self.R.get_value()
         Vl = -Vc - Vr
-        return Vc, -self.I, Vr, Vl
+        return Vc, -self.I, -Vr, Vl
+
+    def generate_loss_plot(self, axes):
+        self.Q = self.C.get_value() * self.EMF
+        self.I = 0
+        return axes.plot(lambda t: 
+            self.EMF * np.exp(-(2 * PI * get_resonant_frequency(self.L.get_value(), self.C.get_value()) * t / 
+            (2 * ((1 / self.R.get_value()) * np.sqrt(self.L.get_value() / self.C.get_value())))))
+        ).set_color(GRAY_B)
 
     # Generates the plot Volatage by Time
     def generate_voltage_plot_c(self, axes):
         self.Q = self.C.get_value() * self.EMF
         self.I = 0
-        return axes.plot(lambda t: self.get_voltage_and_current()[0], [0, self.delta.get_value(), self.dt]).set_color(PURPLE)
+        return axes.plot(lambda t: self.get_voltage_and_current()[0], [0, self.delta.get_value(), self.dt]).set_color(YELLOW)
 
     # Generates the plot Current by Time
     def generate_current_plot(self, axes):
         self.Q = self.C.get_value() * self.EMF
         self.I = 0
-        return axes.plot(lambda t: -self.get_voltage_and_current()[1], [0, self.delta.get_value(), self.dt]).set_color(BLUE)
+        return axes.plot(lambda t: self.get_voltage_and_current()[1], [0, self.delta.get_value(), self.dt]).set_color(BLUE)
 
     def generate_voltage_plot_r(self, axes):
         self.Q = self.C.get_value() * self.EMF
         self.I = 0
-        return axes.plot(lambda t: self.get_voltage_and_current()[2], [0, self.delta.get_value(), self.dt]).set_color(RED)
+        return axes.plot(lambda t: self.get_voltage_and_current()[2], [0, self.delta.get_value(), self.dt]).set_color(RED_B)
 
     def generate_voltage_plot_l(self, axes):
         self.Q = self.C.get_value() * self.EMF
         self.I = 0
-        return axes.plot(lambda t: self.get_voltage_and_current()[3], [0, self.delta.get_value(), self.dt]).set_color(GREEN)
+        return axes.plot(lambda t: self.get_voltage_and_current()[3], [0, self.delta.get_value(), self.dt]).set_color(GOLD)
 
     # /// ORIENTERS ///
 
@@ -143,6 +151,7 @@ class CircuitScene(Scene):
                 x_range=[0, self.time.get_value(), .1],
                 y_range=[-6, 6, 1],
                 x_length=10,
+                y_length=8,
                 axis_config={"color": WHITE},
                 x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(1), .1)},
                 y_axis_config={"numbers_to_include": np.arange(-6.01, 6.01, 1)},        
@@ -152,6 +161,7 @@ class CircuitScene(Scene):
                 x_range=[0, self.time.get_value(), .1],
                 y_range=[-6, 6, 1],
                 x_length=10,
+                y_length=8,
                 axis_config={"color": WHITE},
                 x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(1), .1)},
                 y_axis_config={"numbers_to_include": np.arange(-6.01, 6.01, 1)},          
@@ -167,6 +177,7 @@ class CircuitScene(Scene):
         current = self.generate_current_plot(axes)
         r_voltage = self.generate_voltage_plot_r(axes)
         l_voltage = self.generate_voltage_plot_l(axes)
+        loss = self.generate_loss_plot(axes)
         voltage.add_updater(lambda mob: mob.become(self.generate_voltage_plot_c(axes)))
         current.add_updater(lambda mob: mob.become(self.generate_current_plot(axes)))
         r_voltage.add_updater(lambda mob: mob.become(self.generate_voltage_plot_r(axes)))
@@ -191,7 +202,7 @@ class CircuitScene(Scene):
             Text("L =", font_size=18).set_color(GREEN),
             DecimalNumber(
                 self.L.get_value(),
-                num_decimal_places = 6
+                num_decimal_places = 2
             ).scale(graph_scale),
             Text("H", font_size=14, slant = ITALIC).set_color(WHITE)
         )
@@ -202,21 +213,27 @@ class CircuitScene(Scene):
             Text("C =", font_size=18).set_color(PURPLE),
             DecimalNumber(
                 self.C.get_value(),
-                num_decimal_places = 6
+                num_decimal_places = 4
             ).scale(graph_scale),
             Text("F", font_size=14, slant = ITALIC).set_color(WHITE)
         )
         c_label.arrange(RIGHT).next_to(r_label, RIGHT)
+        
+        
+        current_eq = MathTex(r"I",r"=\frac{Q}{t}", font_size=32).set_color_by_tex("I", BLUE)
+        q_factor = MathTex(r"\mathbb{Q}=\frac{1}{",r"R}",r"\cdot",r"\sqrt{",r"L",r"\over",r"C}").set_color_by_tex("L", GREEN).set_color_by_tex("C", PURPLE).set_color_by_tex("\sqrt", WHITE).set_color_by_tex("R", RED)
+        omega = MathTex(r"\omega",r"=",r"2\pi",r"\frac{1}{",r"\sqrt{",r"L",r"C}}").set_color_by_tex("L", GREEN).set_color_by_tex("C", PURPLE)
+        decrement = MathTex(r"V_{o}e^{-\frac{\omega }{2\mathbb{Q}}}")
 
         # Create Frequency Text
-        frequency_text = MathTex(r"f_{res}=", font_size=28).set_color(GOLD_A)
+        frequency_text = Text("Frequency = ", font_size=20).set_color(ORANGE)
         frequency_number = DecimalNumber(
-                    get_resonant_frequency(self.l.get_value(), self.c.get_value()),
+                    get_resonant_frequency(self.L.get_value(), self.C.get_value()),
                     num_decimal_places = 2
                 ).scale(graph_scale)
-        frequency_units = MathTex(r"Hz", font_size=16)
+        frequency_units = Text("Hz", font_size=16, slant = ITALIC)
         frequency_label = VGroup(frequency_text, frequency_number, frequency_units)
-        frequency_label.arrange(RIGHT).next_to(axes, UP).shift(0.3*UP)
+        frequency_label.arrange(RIGHT).scale(1.3).next_to(axes, UP)
 
         # Create Voltage and Current Text
         va_label = VGroup(
@@ -232,6 +249,7 @@ class CircuitScene(Scene):
         slide_title = Text("Electric Harmonic Oscillator", font_size=48).to_edge(UP, buff=0.5).set_color(BLUE)
         electric_title = Text("Resonant Electric Circuit (LCR)", font_size=32).next_to(slide_title,DOWN)
 
+
 #-------------------------------------CREATING THE SCENE---------------------------------------
 
         # add objects and animations
@@ -244,13 +262,14 @@ class CircuitScene(Scene):
         self.play(circuit_diagram.animate.scale(0.6).to_edge(DR))
         self.wait()
 
-        voltage_eqs[0].set_color_by_tex("L", GREEN).set_color_by_tex("C", PURPLE).set_color_by_tex("R", RED)
-        voltage_eqs[1].set_color_by_tex("L", GREEN).set_color_by_tex("C", PURPLE).set_color_by_tex("R", RED)
-        voltage_eqs[2].set_color_by_tex("L", GREEN).set_color_by_tex("C", PURPLE).set_color_by_tex("R", RED)
+        voltage_eqs[0].set_color_by_tex("L", GREEN).set_color_by_tex("C", PURPLE).set_color_by_tex("R", RED).set_color_by_tex("V", GOLD)
+        voltage_eqs[1].set_color_by_tex("L", GREEN).set_color_by_tex("C", PURPLE).set_color_by_tex("R", RED).set_color_by_tex("V", RED_B)
+        voltage_eqs[2].set_color_by_tex("L", GREEN).set_color_by_tex("C", PURPLE).set_color_by_tex("R", RED).set_color_by_tex("V", YELLOW)
         self.play(FadeIn(
                 voltage_eqs[1].next_to(circuit, UP).shift(0.4*DOWN), 
                 voltage_eqs[0].next_to(voltage_eqs[1], LEFT, buff=0.5),
-                voltage_eqs[2].next_to(voltage_eqs[1], RIGHT, buff=0.5)
+                voltage_eqs[2].next_to(voltage_eqs[1], RIGHT, buff=0.5),
+                current_eq.next_to(circuit,DOWN).shift(UP*0.85)
             )
         )
         blackbox = Rectangle(color=BLACK, width=1, height=1).set_fill(BLACK, opacity=1.0)
@@ -266,10 +285,10 @@ class CircuitScene(Scene):
         arrow_r = Arrow(start=LEFT, end=RIGHT, color = BLUE, tip_length=0.2)
         arrow_c = Arrow(start=UP, end=DOWN, color = BLUE, tip_length=0.2)
 
-        plus_l = Text("+", font_size=20).set_color(YELLOW).next_to(magnetic_field, DL, buff=0)
-        minus_l = Text("-", font_size=40).set_color(YELLOW).next_to(magnetic_field, UL, buff=0)
-        plus_r = Text("+", font_size=20).set_color(YELLOW).next_to(resistive_loss, UL, buff=0)
-        minus_r = Text("-", font_size=40).set_color(YELLOW).next_to(resistive_loss, UR, buff=0)
+        plus_l = Text("+", font_size=20).set_color(GOLD).next_to(magnetic_field, DL, buff=0)
+        minus_l = Text("-", font_size=40).set_color(GOLD).next_to(magnetic_field, UL, buff=0)
+        plus_r = Text("+", font_size=20).set_color(RED_B).next_to(resistive_loss, UL, buff=0)
+        minus_r = Text("-", font_size=40).set_color(RED_B).next_to(resistive_loss, UR, buff=0)
         plus_c = Text("+", font_size=20).set_color(YELLOW).next_to(dielectric_field, UR)
         minus_c = Text("-", font_size=40).set_color(YELLOW).next_to(dielectric_field, DR)
 
@@ -296,7 +315,7 @@ class CircuitScene(Scene):
         minus_c.add_updater(lambda m: self.set_orientation_c_minus(m, dielectric_field))
 
         self.wait(2)
-        self.play(FadeIn(r_label, l_label, c_label, frequency_label, va_label, 
+        self.play(FadeIn(r_label, l_label, c_label, va_label, 
                          axes, voltage, current, r_voltage, l_voltage), run_time = 0.5)
         self.wait()
         self.remove(blackbox)
@@ -304,3 +323,26 @@ class CircuitScene(Scene):
                  arrow_l, arrow_r, arrow_c,
                  plus_l, plus_r, plus_c, minus_l, minus_r, minus_c)
         self.play(self.delta.animate.set_value(self.time.get_value()), run_time = 12, rate_func = linear)
+        self.wait()
+        self.play(FadeIn(DashedVMobject(loss, num_dashes = 24, dashed_ratio = 0.5)), run_time = 2)
+        self.wait()
+        
+        current.remove_updater(current.get_updaters()[0])
+        r_voltage.remove_updater(r_voltage.get_updaters()[0])
+        l_voltage.remove_updater(l_voltage.get_updaters()[0])
+
+        self.remove(magnetic_field,dielectric_field,resistive_loss)
+        self.play(
+            FadeOut(
+                r_voltage, current, l_voltage, circuit, current_eq,
+                arrow_l, arrow_r, arrow_c,
+                plus_l, plus_r, plus_c, minus_l, minus_r, minus_c
+            )
+        )
+        self.wait()
+        self.play(FadeIn(decrement.next_to(loss, UR).shift(3*LEFT+DOWN).scale(1.25)))
+        self.wait()
+
+        self.play(FadeIn(q_factor.next_to(voltage_eqs[1], DOWN, buff=1)))
+        self.wait()
+        self.play(FadeIn(omega.next_to(q_factor, DOWN, buff=0.5)))

@@ -6,7 +6,6 @@ from math_equations import *
 class OscilatorsMath(Scene):
     def construct(self):
 
-        slide_title = Text("Simple Harmonic Oscillators", font_size=48).to_edge(UP, buff=0.5).set_color(ORANGE)
         spring_diagram = SVGMobject("src/assets/spring.svg").scale(2.0)
         pendulum_diagram = SVGMobject("src/assets/pendulum.svg").scale(2.0)
 
@@ -15,7 +14,7 @@ class OscilatorsMath(Scene):
         self.wait()
         self.play(Write(spring_title))
         self.wait()
-        self.play(Write(spring_eqs[8].next_to(spring_title, DOWN)))
+        self.play(Write(spring_eqs[8].next_to(spring_title, DOWN, buff=0.5)))
         self.wait()
         self.play(FadeIn(spring_diagram.next_to(spring_eqs[8], DOWN, buff=0.5)))
         self.wait()
@@ -47,7 +46,7 @@ class OscilatorsMath(Scene):
         self.wait()
         self.play(Write(spring_eqs[4].next_to(spring_eqs[3], DOWN, buff=0.8)))
         self.wait()
-        self.play(spring_eqs[4].animate.become(spring_eqs[5]. next_to(spring_eqs[3], DOWN, buff=0.8)))
+        self.play(spring_eqs[4].animate.become(spring_eqs[5].next_to(spring_eqs[3], DOWN, buff=0.8)))
         self.wait()
         self.play(spring_eqs[2][0].animate.become(spring_eqs[3][1].copy()).move_to(spring_eqs[2][0]))
         self.wait()
@@ -55,7 +54,7 @@ class OscilatorsMath(Scene):
         self.wait()
         self.play(ReplacementTransform(spring_eqs[2],spring_eqs[6].scale(1.5)), FadeOut(spring_eqs[3],spring_eqs[4],spring_eqs[5]))
         self.wait()
-        self.play(TransformMatchingTex(spring_eqs[6].copy(), spring_eqs[7].scale(1.5).next_to(spring_eqs[6], DOWN, buff=0.5), path_arc=90*DEGREES))
+        self.play(TransformMatchingTex(spring_eqs[6].copy(), spring_eqs[7].scale(1.75).next_to(spring_eqs[6], DOWN, buff=0.5), path_arc=90*DEGREES))
         self.wait()
         self.play(FadeOut(spring_eqs[6]), spring_eqs[7].animate.shift(UP))
         self.wait()
@@ -65,7 +64,7 @@ class OscilatorsMath(Scene):
         # Penulum Diagram
         self.play(Write(pendulum_title))
         self.wait()
-        self.play(Write(pendulum_eqs[5].next_to(pendulum_title,DOWN)))
+        self.play(Write(pendulum_eqs[5].next_to(pendulum_title,DOWN,buff=0.5)))
         self.wait()
         self.play(FadeIn(pendulum_diagram.next_to(pendulum_eqs[5],DOWN,buff=0.5)))
         self.wait()
@@ -91,13 +90,11 @@ class OscilatorsMath(Scene):
         self.wait()
         self.play(Write(pendulum_eqs[2].next_to(pendulum_eqs[1], DOWN, buff=0.8)))
         self.wait()
+        
         self.play(pendulum_eqs[2].animate.become(pendulum_eqs[3].next_to(pendulum_eqs[1], DOWN, buff=0.8)))
         self.wait()
-        self.play(pendulum_eqs[0][0].animate.become(pendulum_eqs[1][2].copy().move_to(pendulum_eqs[0][0])))
-        self.wait()
-        self.play(pendulum_eqs[0][3].animate.become(pendulum_eqs[3][0].move_to(pendulum_eqs[0][3])))
-        self.wait()
-        self.play(ReplacementTransform(pendulum_eqs[0], pendulum_eqs[4].scale(1.5)), FadeOut(pendulum_eqs[1],pendulum_eqs[2],pendulum_eqs[3]))
+
+        self.play(ReplacementTransform(pendulum_eqs[0], pendulum_eqs[4].scale(1.75).shift(UP)), FadeOut(pendulum_eqs[1],pendulum_eqs[2],pendulum_eqs[3],pendulum_title))
         self.wait()
         self.play(FadeIn(spring_eqs[7].next_to(pendulum_eqs[4], DOWN, buff=0.8)))
         self.wait()

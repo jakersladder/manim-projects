@@ -2,16 +2,17 @@ from manim import *
 import math
 import numpy as np
 from utils import * 
+from math_equations import *
 
 # Electric Circuit Simulator
 class ParametricResonance(Scene):
-    r = ValueTracker(0)
+    r = ValueTracker(200)
     l = ValueTracker(0.2)
     c = ValueTracker(0.0000001)
     m = ValueTracker(0.2)
     para_freq = ValueTracker(2.0)
 
-    emf = 0.1
+    emf = 1.0
     i = 0
     q = c.get_value() * emf
 
@@ -65,22 +66,13 @@ class ParametricResonance(Scene):
         axes = Axes(
                 x_range=[0, self.time.get_value(), self.time.get_value().round(4) / 10],
                 y_range=[-6, 6, 1],
-                x_length=10,
+                x_length=12,
+                y_length=5,
                 axis_config={"color": WHITE},
                 x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(4), self.time.get_value().round(4) / 10)},
-                y_axis_config={"numbers_to_include": np.arange(-6.01, 6.01, 1)},        
+                # y_axis_config={"numbers_to_include": np.arange(-6.01, 6.01, 1)},        
                 tips=False,
             )
-        axes.add_updater(lambda mob: mob.become(Axes(
-                x_range=[0, self.time.get_value().round(4), self.time.get_value().round(4) / 10],
-                y_range=[-6, 6, 1],
-                x_length=10,
-                axis_config={"color": WHITE},
-                x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(3), self.time.get_value().round(4) / 10)},
-                y_axis_config={"numbers_to_include": np.arange(-6.01, 6.01, 1)},          
-                tips=False,
-            )))
-        labels = axes.get_axis_labels('t', 'V,A')
 
         x_axis = axes.get_x_axis()
         x_axis.add_updater(lambda mob: mob.set(x_range = [0, self.time.get_value(), .1]))
@@ -101,7 +93,7 @@ class ParametricResonance(Scene):
             ),
             Tex("$\Omega$", font_size=44).set_color(WHITE)
         )
-        r_label.arrange(RIGHT).next_to(axes, DOWN)
+        r_label.arrange(RIGHT).next_to(axes, DOWN).shift(DOWN*0.5).scale(0.75)
         
         # Create Inductance text
         l_text, l_number, l_units = l_label = VGroup(
@@ -112,7 +104,7 @@ class ParametricResonance(Scene):
             ),
             Text("H", font_size=28, slant = ITALIC).set_color(WHITE)
         )
-        l_label.arrange(RIGHT).next_to(r_label, LEFT)
+        l_label.arrange(RIGHT).next_to(r_label, LEFT).scale(0.75)
         
         # Create Capacitance text
         c_text, c_number, c_units = c_label = VGroup(
@@ -123,7 +115,7 @@ class ParametricResonance(Scene):
             ),
             Text("F", font_size=28, slant = ITALIC).set_color(WHITE)
         )
-        c_label.arrange(RIGHT).next_to(r_label, RIGHT)
+        c_label.arrange(RIGHT).next_to(r_label, RIGHT).scale(0.75)
 
         # Create Frequency Text
         frequency_text = Text("Frequency = ", font_size=36).set_color(ORANGE)
@@ -139,7 +131,9 @@ class ParametricResonance(Scene):
         voltage_label, current_label = va_label = VGroup(
             Text('VOLTAGE (V)', font_size=28).set_color(YELLOW),
             Text('CURRENT (I)', font_size=28).set_color(BLUE)
-        ).arrange(RIGHT).next_to(r_label, UP)
+        ).arrange(RIGHT).next_to(r_label, UP).scale(0.75)
+
+        eng_inequality = MathTex(r"\frac{1}{2}",r"\Delta",r"L",r"i",r"^{2}",r">",r"R",r"i",r"^{2}t").set_color_by_tex("L",GREEN).set_color_by_tex("R",RED).set_color_by_tex("i",BLUE)
 
         # add updaters to decimal numbers
         r_number.add_updater(lambda m: m.set_value(self.r.get_value()))
@@ -148,17 +142,20 @@ class ParametricResonance(Scene):
         frequency_number.add_updater(lambda m: m.set_value(get_resonant_frequency(self.l.get_value(), self.c.get_value())))
 
         # add objects and animations
-        self.add(r_label, l_label, c_label, frequency_label, va_label)
-        self.add(axes, labels, voltage, current)
-
-        # play animations
-        # self.wait()
-
-        self.play(self.delta.animate.set_value(self.time.get_value()), run_time=10, rate_func=linear)
-        self.play(self.r.animate.set_value(200), run_time = 10, rate_func=linear)
-        self.play(self.r.animate.set_value(10), run_time = 10, rate_func=linear)
-        self.play(self.para_freq.animate.set_value(2.1), run_time = 10, rate_func=linear)
-        self.play(self.para_freq.animate.set_value(1.9), run_time = 10, rate_func=linear)
+        self.add(eng_inequality.to_edge(UP,buff=0.5))
+        self.wait()
+        self.play(FadeIn(axes.shift(DOWN*0.5), voltage, current))
+        self.wait()
+        self.play(FadeIn(r_label, l_label, c_label, va_label))
+        self.wait()
+        self.play(self.delta.animate.set_value(self.time.get_value()), run_time = 3, rate_func=linear)
+        self.wait()
+        self.play(self.r.animate.set_value(115), run_time = 5)
+        self.wait(2)
+        self.play(self.r.animate.set_value(134), run_time = 5)
+        self.wait()
+        # self.play(self.para_freq.animate.set_value(2.1), run_time = 10, rate_func=linear)
+        # self.play(self.para_freq.animate.set_value(1.9), run_time = 10, rate_func=linear)
         # self.play(self.l.animate.set_value(0.5), run_time = 2)
         # self.play(self.c.animate.set_value(0.002), run_time = 2)
         # self.play(self.m.animate.set_value(0.5), run_time = 2)
