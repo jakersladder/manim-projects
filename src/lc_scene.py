@@ -33,7 +33,7 @@ class LCScene(Scene):
     def generate_loss_plot(self, axes):
         self.Q = self.C.get_value() * self.EMF
         self.I = 0
-        return axes.plot(lambda t: self.get_voltage_and_current()[0] * (1 - np.exp((self.R * t) / self.L))).set_color(GRAY_B)
+        return axes.plot(lambda t: self.get_voltage_and_current()[0] * (1 - np.exp((self.R.get_value() * t) / self.L.get_value()))).set_color(GRAY_B)
 
     # Generates the plot Volatage by Time
     def generate_voltage_plot_c(self, axes):
@@ -127,6 +127,7 @@ class LCScene(Scene):
                 x_range=[0, self.time.get_value(), .1],
                 y_range=[-6, 6, 1],
                 x_length=10,
+                y_length=8,
                 axis_config={"color": WHITE},
                 x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(1), .1)},
                 y_axis_config={"numbers_to_include": np.arange(-6.01, 6.01, 1)},        
@@ -136,6 +137,7 @@ class LCScene(Scene):
                 x_range=[0, self.time.get_value(), .1],
                 y_range=[-6, 6, 1],
                 x_length=10,
+                y_length=8,
                 axis_config={"color": WHITE},
                 x_axis_config={"numbers_to_include": np.arange(0, self.time.get_value().round(1), .1)},
                 y_axis_config={"numbers_to_include": np.arange(-6.01, 6.01, 1)},          
@@ -251,7 +253,7 @@ class LCScene(Scene):
 
         # Graph Animation
         self.wait()
-        self.play(FadeIn(lc_label, frequency_label, va_label, 
+        self.play(FadeIn(lc_label, va_label, 
                          axes, voltage, current, l_voltage), run_time = 0.5)
         self.wait()
         ellipse_1.add_updater(lambda m: m.set_opacity(abs(self.I*2)))
